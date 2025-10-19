@@ -1,6 +1,6 @@
 import { TextInput, Stack, Title, Alert, Loader, Modal, Button, Group, Text } from '@mantine/core';
 import type { UseFormReturnType } from '@mantine/form';
-import type { EnrollmentFormData } from '../../types/enrollment';
+import type { EnrollmentFormData } from '../../validation/enrollmentSchema';
 import { useState } from 'react';
 import { useSolarEnrollmentApiEndpointsValidateAddressValidateAddressEndpoint } from '../../api/solarenrollment-api/solarenrollment-api';
 import type { NormalizedAddress } from './types/normalizedAddress';

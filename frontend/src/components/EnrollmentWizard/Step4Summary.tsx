@@ -1,6 +1,6 @@
 import { Stack, Title, Text, Paper, Group, Badge, Divider } from '@mantine/core';
 import type { UseFormReturnType } from '@mantine/form';
-import type { EnrollmentFormData } from '../../types/enrollment';
+import type { EnrollmentFormData } from '../../validation/enrollmentSchema';
 
 interface Step4SummaryProps {
   form: UseFormReturnType<EnrollmentFormData>;

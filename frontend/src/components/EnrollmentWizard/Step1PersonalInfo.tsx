@@ -1,6 +1,6 @@
 import { TextInput, Stack, Title } from '@mantine/core';
 import type { UseFormReturnType } from '@mantine/form';
-import type { EnrollmentFormData } from '../../types/enrollment';
+import type { EnrollmentFormData } from '../../validation/enrollmentSchema';
 
 interface Step1PersonalInfoProps {
   form: UseFormReturnType<EnrollmentFormData>;

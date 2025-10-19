@@ -9,9 +9,20 @@ import { useDraftStorage } from '../../hooks/useDraftStorage';
 import { useForm } from '@mantine/form';
 import { useSolarEnrollmentApiEndpointsCreateEnrollmentCreateEnrollmentEndpoint } from '../../api/solarenrollment-api/solarenrollment-api';
 import { useState } from 'react';
-import type { EnrollmentFormData } from '../../types/enrollment';
+import type { EnrollmentFormData } from '../../validation/enrollmentSchema';
+import { EnrollmentFormSchema, Step1Schema, Step2Schema, Step3Schema } from '../../validation/enrollmentSchema';
+import type { ZodError } from 'zod';
 
 const TOTAL_STEPS = 4;
+
+const zodErrorsToFormErrors = (error: ZodError): Record<string, string> => {
+  const formErrors: Record<string, string> = {};
+  error.issues.forEach((err) => {
+    const path = err.path.join('.');
+    formErrors[path] = err.message;
+  });
+  return formErrors;
+};
 
 export const EnrollmentWizard = () => {
   const { draft, saveDraft, clearDraft } = useDraftStorage();
@@ -34,60 +45,48 @@ export const EnrollmentWizard = () => {
       hasAssistanceProgram: draft.hasAssistanceProgram || false,
       assistancePrograms: draft.assistancePrograms || [],
     },
-    validate: {
-      firstName: (value) => (value.trim().length < 1 ? 'First name is required' : null),
-      lastName: (value) => (value.trim().length < 1 ? 'Last name is required' : null),
-      address: (value) => (value.trim().length < 1 ? 'Address is required' : null),
-      city: (value) => (value.trim().length < 1 ? 'City is required' : null),
-      state: (value) => (value.trim().length !== 2 ? 'State must be 2 letters' : null),
-      zipCode: (value) => (!/^\d{5}(-\d{4})?$/.test(value) ? 'Invalid ZIP code format' : null),
-      utility: (value) => (!value ? 'Utility is required' : null),
-      utilityAccountNumber: (value) => {
-        if (!value) return 'Utility account number is required';
-        
-        const utility = form.values.utility;
-        if (utility === 'PSEG' && !/^\d{10}$/.test(value)) {
-          return 'PSEG account number must be exactly 10 digits';
+    validate: (values) => {
+      try {
+        EnrollmentFormSchema.parse(values);
+        return {};
+      } catch (error) {
+        if (error instanceof Error && 'issues' in error) {
+          return zodErrorsToFormErrors(error as ZodError);
         }
-        if (utility === 'JCPL' && !/^\d{12}$/.test(value)) {
-          return 'JCPL account number must be exactly 12 digits';
-        }
-        return null;
-      },
-      assistancePrograms: (value) => {
-        if (form.values.hasAssistanceProgram && (!value || value.length === 0)) {
-          return 'Please select at least one assistance program';
-        }
-        return null;
-      },
+        return {};
+      }
     },
   });
 
   const handleNext = () => {
-    let fieldsToValidate: (keyof EnrollmentFormData)[] = [];
+    let stepSchema;
     
     switch (currentStep) {
       case 0:
-        fieldsToValidate = ['firstName', 'lastName'];
+        stepSchema = Step1Schema;
         break;
       case 1:
-        fieldsToValidate = ['address', 'city', 'state', 'zipCode'];
+        stepSchema = Step2Schema;
         break;
       case 2:
-        fieldsToValidate = ['utility', 'utilityAccountNumber', 'assistancePrograms'];
+        stepSchema = Step3Schema;
         break;
       case 3:
+        // No validation on summary step
         break;
     }
 
-    if (currentStep < 3) {
-      const validation = form.validate();
-      const hasStepErrors = fieldsToValidate.some(field => validation.errors[field]);
+    if (currentStep < 3 && stepSchema) {
+      const result = stepSchema.safeParse(form.values);
       
-      if (hasStepErrors) {
+      if (!result.success) {
+        const stepErrors = zodErrorsToFormErrors(result.error);
+        form.setErrors(stepErrors);
         return;
       }
     }
+
+    form.clearErrors();
 
     // Save current step data
     saveDraft(form.values);
@@ -104,15 +103,17 @@ export const EnrollmentWizard = () => {
   };
 
   const handleSubmit = async () => {
-    const validation = form.validate();
-    if (validation.hasErrors) {
+    const result = EnrollmentFormSchema.safeParse(form.values);
+    
+    if (!result.success) {
+      form.setErrors(zodErrorsToFormErrors(result.error));
       return;
     }
 
     setSubmitError(null);
 
     try {
-      const result = await submitCreateEnrollmentAsync({
+      const submissionResult = await submitCreateEnrollmentAsync({
         data: {
           firstName: form.values.firstName,
           lastName: form.values.lastName,
@@ -127,12 +128,12 @@ export const EnrollmentWizard = () => {
         },
       });
       
-      if (result.success) {
+      if (submissionResult.success) {
         setSubmitSuccess(true);
         clearDraft();
         form.reset();
       } else {
-        setSubmitError(result.message || 'Failed to submit enrollment');
+        setSubmitError(submissionResult.message || 'Failed to submit enrollment');
       }
     } catch (error) {
       setSubmitError('An error occurred while submitting your enrollment. Please try again.');

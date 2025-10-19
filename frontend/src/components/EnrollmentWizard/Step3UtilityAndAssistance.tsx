@@ -1,6 +1,6 @@
 import { Select, TextInput, Stack, Title, Checkbox, MultiSelect } from '@mantine/core';
 import type { UseFormReturnType } from '@mantine/form';
-import type { EnrollmentFormData, UtilityType, AssistanceProgramType } from '../../types/enrollment';
+import type { EnrollmentFormData, UtilityType, AssistanceProgramType } from '../../validation/enrollmentSchema';
 
 interface Step3UtilityAndAssistanceProps {
   form: UseFormReturnType<EnrollmentFormData>;
