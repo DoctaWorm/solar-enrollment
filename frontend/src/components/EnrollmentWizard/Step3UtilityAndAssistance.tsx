@@ -63,8 +63,7 @@ export const Step3UtilityAndAssistance = ({ form }: Step3UtilityAndAssistancePro
         <Checkbox
           label="I participate in an assistance program"
           {...form.getInputProps('hasAssistanceProgram', { type: 'checkbox' })}
-          size="sm"
-
+          size={'xl'}
         />
         {hasAssistance && (
           <MultiSelect

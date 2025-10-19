@@ -55,9 +55,7 @@ textarea:focus-visible {
 
 /* Ensure minimum touch target sizes for mobile */
 button,
-a,
-input[type="checkbox"],
-input[type="radio"] {
+a {
   min-height: 44px;
   min-width: 44px;
 }
