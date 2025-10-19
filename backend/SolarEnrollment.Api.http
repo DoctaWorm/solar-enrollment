@@ -1,0 +1,6 @@
+@SolarEnrollment.Api_HostAddress = http://localhost:5247
+
+GET {{SolarEnrollment.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
