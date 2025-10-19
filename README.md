@@ -26,7 +26,7 @@ A multi-step enrollment wizard for solar subscribers built with .NET Core backen
 
 
 ### UI / UX workflow 
-![Step 1 Personal Info](/solar-enrollment/assets/step1-personal-info.png) ![Step 2 Address form and validation](/solar-enrollment/assets/step2-server-validation.png) ![Step 2 Address found from geo service](/solar-enrollment/assets/step2-address-found-prompt.png) ![Step 2 Valid address](/solar-enrollment/assets/step2-valid-address.png) ![Step 3 Utility](/solar-enrollment/assets/step3-utility-and-assistance.png) ![Step 4 Summary](/solar-enrollment/assets/step4-summary.png) ![Success Message](/solar-enrollment/assets/success.png)
+![Step 1 Personal Info](assets/step1-personal-info.png) ![Step 2 Address form and validation](assets/step2-server-validation.png) ![Step 2 Address found from geo service](assets/step2-address-found-prompt.png) ![Step 2 Valid address](assets/step2-valid-address.png) ![Step 3 Utility](assets/step3-utility-and-assistance.png) ![Step 4 Summary](assets/step4-summary.png) ![Success Message](assets/success.png)
 
 ### Quick Start
 
