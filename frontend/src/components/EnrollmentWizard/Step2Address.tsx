@@ -2,7 +2,7 @@ import { TextInput, Stack, Title, Alert, Loader, Modal, Button, Group, Text } fr
 import type { UseFormReturnType } from '@mantine/form';
 import type { EnrollmentFormData } from '../../validation/enrollmentSchema';
 import { useState } from 'react';
-import { useSolarEnrollmentApiEndpointsValidateAddressValidateAddressEndpoint } from '../../api/solarenrollment-api/solarenrollment-api';
+import { useValidateAddress } from '../../api/solarenrollment-api/solarenrollment-api';
 import type { NormalizedAddress } from './types/normalizedAddress';
 import { isAddressDifferent } from './utility/isAddressDifferent';
 
@@ -16,7 +16,7 @@ export const Step2Address = ({ form, onAddressValidated }: Step2AddressProps) =>
   const [showNormalizedModal, setShowNormalizedModal] = useState(false);
   const [normalizedAddress, setNormalizedAddress] = useState<NormalizedAddress | null>(null);
   
-  const { mutateAsync: validateAddressAsync, isPending } = useSolarEnrollmentApiEndpointsValidateAddressValidateAddressEndpoint();
+  const { mutateAsync: validateAddressAsync, isPending } = useValidateAddress();
 
   const parseNormalizedAddress = (normalizedAddressString: string): NormalizedAddress | null => {
     const address = normalizedAddressString.split(',').map(p => p.trim());

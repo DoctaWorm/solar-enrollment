@@ -6,6 +6,7 @@ using SolarEnrollment.Api.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddFastEndpoints();
+
 builder.Services.AddOpenApi();
 
 builder.Services.AddDbContext<EnrollmentDbContext>(options =>
@@ -30,7 +31,20 @@ app.MapOpenApi();
 
 app.UseCors("AllowLocalhost");
 app.UseHttpsRedirection();
-app.UseFastEndpoints();
+app.UseFastEndpoints(c =>
+{
+    c.Endpoints.Configurator = ep =>
+    {
+        var endpointName = ep.EndpointType.Name;
+        
+        if (endpointName.EndsWith("Endpoint"))
+        {
+            endpointName = endpointName.Substring(0, endpointName.Length - 8);
+        }
+        
+        ep.Description(d => d.WithName(endpointName));
+    };
+});
 
 using (var scope = app.Services.CreateScope())
 {

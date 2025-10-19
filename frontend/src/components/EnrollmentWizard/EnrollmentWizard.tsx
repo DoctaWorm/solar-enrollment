@@ -7,7 +7,7 @@ import { Step4Summary } from './Step4Summary';
 import { StepIndicator } from './StepIndicator';
 import { useDraftStorage } from '../../hooks/useDraftStorage';
 import { useForm } from '@mantine/form';
-import { useSolarEnrollmentApiEndpointsCreateEnrollmentCreateEnrollmentEndpoint } from '../../api/solarenrollment-api/solarenrollment-api';
+import { useCreateEnrollment } from '../../api/solarenrollment-api/solarenrollment-api';
 import { useState } from 'react';
 import type { EnrollmentFormData } from '../../validation/enrollmentSchema';
 import { EnrollmentFormSchema, Step1Schema, Step2Schema, Step3Schema } from '../../validation/enrollmentSchema';
@@ -30,7 +30,7 @@ export const EnrollmentWizard = () => {
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   
-  const { mutateAsync: submitCreateEnrollmentAsync, isPending } = useSolarEnrollmentApiEndpointsCreateEnrollmentCreateEnrollmentEndpoint();
+  const { mutateAsync: submitCreateEnrollmentAsync, isPending } = useCreateEnrollment();
 
   const form = useForm<EnrollmentFormData>({
     initialValues: {

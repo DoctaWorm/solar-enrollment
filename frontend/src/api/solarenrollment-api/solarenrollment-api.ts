@@ -23,237 +23,167 @@ import { customInstance } from ".././mutator";
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
-export const solarEnrollmentApiEndpointsValidateAddressValidateAddressEndpoint =
-  (
-    validateAddressRequest: ValidateAddressRequest,
-    options?: SecondParameter<typeof customInstance>,
-    signal?: AbortSignal,
-  ) => {
-    return customInstance<ValidateAddressResponse>(
-      {
-        url: `/api/address/validate`,
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        data: validateAddressRequest,
-        signal,
-      },
-      options,
-    );
+export const validateAddress = (
+  validateAddressRequest: ValidateAddressRequest,
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<ValidateAddressResponse>(
+    {
+      url: `/api/address/validate`,
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      data: validateAddressRequest,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getValidateAddressMutationOptions = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof validateAddress>>,
+    TError,
+    { data: ValidateAddressRequest },
+    TContext
+  >;
+  request?: SecondParameter<typeof customInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof validateAddress>>,
+  TError,
+  { data: ValidateAddressRequest },
+  TContext
+> => {
+  const mutationKey = ["validateAddress"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof validateAddress>>,
+    { data: ValidateAddressRequest }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return validateAddress(data, requestOptions);
   };
 
-export const getSolarEnrollmentApiEndpointsValidateAddressValidateAddressEndpointMutationOptions =
-  <TError = unknown, TContext = unknown>(options?: {
+  return { mutationFn, ...mutationOptions };
+};
+
+export type ValidateAddressMutationResult = NonNullable<
+  Awaited<ReturnType<typeof validateAddress>>
+>;
+export type ValidateAddressMutationBody = ValidateAddressRequest;
+export type ValidateAddressMutationError = unknown;
+
+export const useValidateAddress = <TError = unknown, TContext = unknown>(
+  options?: {
     mutation?: UseMutationOptions<
-      Awaited<
-        ReturnType<
-          typeof solarEnrollmentApiEndpointsValidateAddressValidateAddressEndpoint
-        >
-      >,
+      Awaited<ReturnType<typeof validateAddress>>,
       TError,
       { data: ValidateAddressRequest },
       TContext
     >;
     request?: SecondParameter<typeof customInstance>;
-  }): UseMutationOptions<
-    Awaited<
-      ReturnType<
-        typeof solarEnrollmentApiEndpointsValidateAddressValidateAddressEndpoint
-      >
-    >,
-    TError,
-    { data: ValidateAddressRequest },
-    TContext
-  > => {
-    const mutationKey = [
-      "solarEnrollmentApiEndpointsValidateAddressValidateAddressEndpoint",
-    ];
-    const { mutation: mutationOptions, request: requestOptions } = options
-      ? options.mutation &&
-        "mutationKey" in options.mutation &&
-        options.mutation.mutationKey
-        ? options
-        : { ...options, mutation: { ...options.mutation, mutationKey } }
-      : { mutation: { mutationKey }, request: undefined };
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof validateAddress>>,
+  TError,
+  { data: ValidateAddressRequest },
+  TContext
+> => {
+  const mutationOptions = getValidateAddressMutationOptions(options);
 
-    const mutationFn: MutationFunction<
-      Awaited<
-        ReturnType<
-          typeof solarEnrollmentApiEndpointsValidateAddressValidateAddressEndpoint
-        >
-      >,
-      { data: ValidateAddressRequest }
-    > = (props) => {
-      const { data } = props ?? {};
-
-      return solarEnrollmentApiEndpointsValidateAddressValidateAddressEndpoint(
-        data,
-        requestOptions,
-      );
-    };
-
-    return { mutationFn, ...mutationOptions };
-  };
-
-export type SolarEnrollmentApiEndpointsValidateAddressValidateAddressEndpointMutationResult =
-  NonNullable<
-    Awaited<
-      ReturnType<
-        typeof solarEnrollmentApiEndpointsValidateAddressValidateAddressEndpoint
-      >
-    >
-  >;
-export type SolarEnrollmentApiEndpointsValidateAddressValidateAddressEndpointMutationBody =
-  ValidateAddressRequest;
-export type SolarEnrollmentApiEndpointsValidateAddressValidateAddressEndpointMutationError =
-  unknown;
-
-export const useSolarEnrollmentApiEndpointsValidateAddressValidateAddressEndpoint =
-  <TError = unknown, TContext = unknown>(
-    options?: {
-      mutation?: UseMutationOptions<
-        Awaited<
-          ReturnType<
-            typeof solarEnrollmentApiEndpointsValidateAddressValidateAddressEndpoint
-          >
-        >,
-        TError,
-        { data: ValidateAddressRequest },
-        TContext
-      >;
-      request?: SecondParameter<typeof customInstance>;
+  return useMutation(mutationOptions, queryClient);
+};
+export const createEnrollment = (
+  createEnrollmentRequest: CreateEnrollmentRequest,
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<CreateEnrollmentResponse>(
+    {
+      url: `/api/enrollment`,
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      data: createEnrollmentRequest,
+      signal,
     },
-    queryClient?: QueryClient,
-  ): UseMutationResult<
-    Awaited<
-      ReturnType<
-        typeof solarEnrollmentApiEndpointsValidateAddressValidateAddressEndpoint
-      >
-    >,
+    options,
+  );
+};
+
+export const getCreateEnrollmentMutationOptions = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createEnrollment>>,
     TError,
-    { data: ValidateAddressRequest },
+    { data: CreateEnrollmentRequest },
     TContext
-  > => {
-    const mutationOptions =
-      getSolarEnrollmentApiEndpointsValidateAddressValidateAddressEndpointMutationOptions(
-        options,
-      );
+  >;
+  request?: SecondParameter<typeof customInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof createEnrollment>>,
+  TError,
+  { data: CreateEnrollmentRequest },
+  TContext
+> => {
+  const mutationKey = ["createEnrollment"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
 
-    return useMutation(mutationOptions, queryClient);
-  };
-export const solarEnrollmentApiEndpointsCreateEnrollmentCreateEnrollmentEndpoint =
-  (
-    createEnrollmentRequest: CreateEnrollmentRequest,
-    options?: SecondParameter<typeof customInstance>,
-    signal?: AbortSignal,
-  ) => {
-    return customInstance<CreateEnrollmentResponse>(
-      {
-        url: `/api/enrollment`,
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        data: createEnrollmentRequest,
-        signal,
-      },
-      options,
-    );
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof createEnrollment>>,
+    { data: CreateEnrollmentRequest }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return createEnrollment(data, requestOptions);
   };
 
-export const getSolarEnrollmentApiEndpointsCreateEnrollmentCreateEnrollmentEndpointMutationOptions =
-  <TError = unknown, TContext = unknown>(options?: {
+  return { mutationFn, ...mutationOptions };
+};
+
+export type CreateEnrollmentMutationResult = NonNullable<
+  Awaited<ReturnType<typeof createEnrollment>>
+>;
+export type CreateEnrollmentMutationBody = CreateEnrollmentRequest;
+export type CreateEnrollmentMutationError = unknown;
+
+export const useCreateEnrollment = <TError = unknown, TContext = unknown>(
+  options?: {
     mutation?: UseMutationOptions<
-      Awaited<
-        ReturnType<
-          typeof solarEnrollmentApiEndpointsCreateEnrollmentCreateEnrollmentEndpoint
-        >
-      >,
+      Awaited<ReturnType<typeof createEnrollment>>,
       TError,
       { data: CreateEnrollmentRequest },
       TContext
     >;
     request?: SecondParameter<typeof customInstance>;
-  }): UseMutationOptions<
-    Awaited<
-      ReturnType<
-        typeof solarEnrollmentApiEndpointsCreateEnrollmentCreateEnrollmentEndpoint
-      >
-    >,
-    TError,
-    { data: CreateEnrollmentRequest },
-    TContext
-  > => {
-    const mutationKey = [
-      "solarEnrollmentApiEndpointsCreateEnrollmentCreateEnrollmentEndpoint",
-    ];
-    const { mutation: mutationOptions, request: requestOptions } = options
-      ? options.mutation &&
-        "mutationKey" in options.mutation &&
-        options.mutation.mutationKey
-        ? options
-        : { ...options, mutation: { ...options.mutation, mutationKey } }
-      : { mutation: { mutationKey }, request: undefined };
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof createEnrollment>>,
+  TError,
+  { data: CreateEnrollmentRequest },
+  TContext
+> => {
+  const mutationOptions = getCreateEnrollmentMutationOptions(options);
 
-    const mutationFn: MutationFunction<
-      Awaited<
-        ReturnType<
-          typeof solarEnrollmentApiEndpointsCreateEnrollmentCreateEnrollmentEndpoint
-        >
-      >,
-      { data: CreateEnrollmentRequest }
-    > = (props) => {
-      const { data } = props ?? {};
-
-      return solarEnrollmentApiEndpointsCreateEnrollmentCreateEnrollmentEndpoint(
-        data,
-        requestOptions,
-      );
-    };
-
-    return { mutationFn, ...mutationOptions };
-  };
-
-export type SolarEnrollmentApiEndpointsCreateEnrollmentCreateEnrollmentEndpointMutationResult =
-  NonNullable<
-    Awaited<
-      ReturnType<
-        typeof solarEnrollmentApiEndpointsCreateEnrollmentCreateEnrollmentEndpoint
-      >
-    >
-  >;
-export type SolarEnrollmentApiEndpointsCreateEnrollmentCreateEnrollmentEndpointMutationBody =
-  CreateEnrollmentRequest;
-export type SolarEnrollmentApiEndpointsCreateEnrollmentCreateEnrollmentEndpointMutationError =
-  unknown;
-
-export const useSolarEnrollmentApiEndpointsCreateEnrollmentCreateEnrollmentEndpoint =
-  <TError = unknown, TContext = unknown>(
-    options?: {
-      mutation?: UseMutationOptions<
-        Awaited<
-          ReturnType<
-            typeof solarEnrollmentApiEndpointsCreateEnrollmentCreateEnrollmentEndpoint
-          >
-        >,
-        TError,
-        { data: CreateEnrollmentRequest },
-        TContext
-      >;
-      request?: SecondParameter<typeof customInstance>;
-    },
-    queryClient?: QueryClient,
-  ): UseMutationResult<
-    Awaited<
-      ReturnType<
-        typeof solarEnrollmentApiEndpointsCreateEnrollmentCreateEnrollmentEndpoint
-      >
-    >,
-    TError,
-    { data: CreateEnrollmentRequest },
-    TContext
-  > => {
-    const mutationOptions =
-      getSolarEnrollmentApiEndpointsCreateEnrollmentCreateEnrollmentEndpointMutationOptions(
-        options,
-      );
-
-    return useMutation(mutationOptions, queryClient);
-  };
+  return useMutation(mutationOptions, queryClient);
+};
