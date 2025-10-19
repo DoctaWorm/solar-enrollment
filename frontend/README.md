@@ -1,3 +1,25 @@
+# Frontend Setup (Detailed)
+
+1. Navigate to the frontend directory:
+```bash
+cd frontend
+```
+
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Generate API client (requires backend to be running):
+```bash
+npm run generate:api
+```
+
+4. Start the development server:
+```bash
+npm run dev
+```
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
