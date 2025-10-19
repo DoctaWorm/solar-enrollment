@@ -11,6 +11,7 @@ builder.Services.AddDbContext<EnrollmentDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection") 
         ?? "Data Source=enrollment.db"));
 
+builder.Services.AddHttpClient<IAddressValidationService, AddressValidationService>();
 
 builder.Services.AddCors(options =>
 {
