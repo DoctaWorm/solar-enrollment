@@ -1,6 +1,7 @@
 using FastEndpoints;
 using Microsoft.EntityFrameworkCore;
 using SolarEnrollment.Api.Data;
+using SolarEnrollment.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
