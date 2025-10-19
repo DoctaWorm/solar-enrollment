@@ -3,17 +3,12 @@ import type { UseFormReturnType } from '@mantine/form';
 import type { EnrollmentFormData } from '../../types/enrollment';
 import { useState } from 'react';
 import { useSolarEnrollmentApiEndpointsValidateAddressValidateAddressEndpoint } from '../../api/solarenrollment-api/solarenrollment-api';
+import type { NormalizedAddress } from './types/normalizedAddress';
+import { isAddressDifferent } from './utility/isAddressDifferent';
 
 interface Step2AddressProps {
   form: UseFormReturnType<EnrollmentFormData>;
   onAddressValidated?: (isValid: boolean, message?: string) => void;
-}
-
-interface NormalizedAddress {
-  street: string;
-  city: string;
-  state: string;
-  zip: string;
 }
 
 export const Step2Address = ({ form, onAddressValidated }: Step2AddressProps) => {
@@ -22,6 +17,40 @@ export const Step2Address = ({ form, onAddressValidated }: Step2AddressProps) =>
   const [normalizedAddress, setNormalizedAddress] = useState<NormalizedAddress | null>(null);
   
   const { mutateAsync: validateAddressAsync, isPending } = useSolarEnrollmentApiEndpointsValidateAddressValidateAddressEndpoint();
+
+  const parseNormalizedAddress = (normalizedAddressString: string): NormalizedAddress | null => {
+    const address = normalizedAddressString.split(',').map(p => p.trim());
+    if (address.length < 4) return null;
+    
+    return {
+      street: address[0],
+      city: address[1],
+      state: address[2],
+      zip: address[3],
+    };
+  };
+
+  const handleValidationSuccess = (
+    normalizedAddressString: string,
+    userAddress: { address: string; city: string; state: string; zipCode: string }
+  ) => {
+    const normalized = parseNormalizedAddress(normalizedAddressString);
+    
+    if (!normalized) {
+      setValidationMessage(`✓ Address validated`);
+      onAddressValidated?.(true, normalizedAddressString);
+      return;
+    }
+    
+    if (isAddressDifferent(normalized, userAddress)) {
+      setNormalizedAddress(normalized);
+      setShowNormalizedModal(true);
+      return;
+    }
+    
+    setValidationMessage(`✓ Address validated`);
+    onAddressValidated?.(true, normalizedAddressString);
+  };
 
   const handleZipBlur = async () => {
     const { address, city, state, zipCode } = form.values;
@@ -34,51 +63,23 @@ export const Step2Address = ({ form, onAddressValidated }: Step2AddressProps) =>
 
     try {
       const result = await validateAddressAsync({
-        data: {
-          street: address,
-          city,
-          state,
-          zip: zipCode,
-        },
+        data: { street: address, city, state, zip: zipCode },
       });
 
-      if (result.isValid && result.normalizedAddress) {
-        // Parse the normalized address
-        const parts = result.normalizedAddress.split(',').map(p => p.trim());
-        if (parts.length >= 4) {
-          const normalized = {
-            street: parts[0],
-            city: parts[1],
-            state: parts[2],
-            zip: parts[3],
-          };
-          
-          // Check if the normalized address differs from what the user entered
-          const isDifferent = 
-            normalized.street.toLowerCase() !== address.toLowerCase() ||
-            normalized.city.toLowerCase() !== city.toLowerCase() ||
-            normalized.state !== state.toUpperCase() ||
-            normalized.zip !== zipCode;
-          
-          if (isDifferent) {
-            // Show modal asking if they want to use the normalized address returned rom the API
-            setNormalizedAddress(normalized);
-            setShowNormalizedModal(true);
-          } else {
-            setValidationMessage(`✓ Address validated`);
-            onAddressValidated?.(true, result.normalizedAddress);
-          }
-        } else {
-          setValidationMessage(`✓ Address validated`);
-          onAddressValidated?.(true, result.normalizedAddress);
-        }
-      } else if (result.isValid) {
-        setValidationMessage(`✓ Address validated`);
-        onAddressValidated?.(true);
-      } else {
+      if (!result.isValid) {
         setValidationMessage(`⚠ ${result.errorMessage || 'Address could not be validated'}`);
         onAddressValidated?.(false, result.errorMessage || undefined);
+        return;
       }
+
+      if (!result.normalizedAddress) {
+        setValidationMessage(`✓ Address validated`);
+        onAddressValidated?.(true);
+        return;
+      }
+
+      handleValidationSuccess(result.normalizedAddress, { address, city, state, zipCode });
+      
     } catch (error) {
       setValidationMessage('⚠ Unable to validate address at this time');
       onAddressValidated?.(false);
